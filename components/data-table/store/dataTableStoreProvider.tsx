@@ -10,7 +10,7 @@ export const DataTableStoreProvider = ({
    children,
    ...props
 }: PropsWithChildren<IDataTableStore>) => {
-   const storeRef = useRef<DataTableStoreType>();
+   const storeRef = useRef<DataTableStoreType>(undefined);
    if (!storeRef.current) {
       storeRef.current = createDataTableStore({ ...props });
    }

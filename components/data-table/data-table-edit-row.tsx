@@ -18,30 +18,40 @@ import { Separator } from '@/components/ui/separator';
 import { DataTableForm } from '@/components/data-table/data-table-form';
 import { i18n } from '@/components/data-table/i18n';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function DataTableEditRow({ presetData }: { presetData: { [k: string]: any } }) {
-   const { title, description, onSubmitEditData, schemas } = useDataTableStore((state) => ({
-      ...state.editDataProps,
-      schemas: state.dataValidationProps,
-   }));
+   const store = useDataTableStore();
+   const { title, description, onSubmitEditData } = store.editDataProps || {};
+   const schemas = store.dataValidationProps;
    const getFormSchema = () => {
-      const defaultValues: { [k: string]: string } = {};
       if (schemas instanceof Array && schemas.length > 0) {
          const obj: { [k: string]: z.ZodType } = {};
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         const defaultValues: { [k: string]: any } = {};
+
          schemas.forEach((item) => {
             obj[item.id] = item.schema;
             defaultValues[item.id] = item.id in presetData ? presetData[item.id] : '';
          });
-         return { schema: z.object(obj), defaultValues };
+
+         const schema = z.object(obj);
+         return { schema, defaultValues: defaultValues as z.infer<typeof schema> };
       }
-      return { schema: z.object({}), defaultValues };
+
+      const emptySchema = z.object({});
+      return {
+         schema: emptySchema,
+         defaultValues: {} as z.infer<typeof emptySchema>,
+      };
    };
+
    const FormSchema = getFormSchema();
    const form = useForm<z.infer<typeof FormSchema.schema>>({
       resolver: zodResolver(FormSchema.schema),
       defaultValues: FormSchema.defaultValues,
    });
    const onSubmit = (data: z.infer<typeof FormSchema.schema>) => {
-      onSubmitEditData && onSubmitEditData(data);
+      onSubmitEditData?.(data);
    };
    return (
       <Sheet>
@@ -52,7 +62,7 @@ export function DataTableEditRow({ presetData }: { presetData: { [k: string]: an
          >
             <div
                className={
-                  'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-accent'
+                  'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-hidden focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 hover:bg-accent'
                }
             >
                {i18n.t('EDIT_ROW')}
@@ -65,7 +75,8 @@ export function DataTableEditRow({ presetData }: { presetData: { [k: string]: an
             </SheetHeader>
             <Separator />
             {Object.keys(FormSchema.defaultValues).length > 0 && schemas !== undefined && (
-               <DataTableForm schemas={schemas} form={form} onSubmit={onSubmit} />
+               // eslint-disable-next-line @typescript-eslint/no-explicit-any
+               <DataTableForm schemas={schemas} form={form as any} onSubmit={onSubmit} />
             )}
          </SheetContent>
       </Sheet>

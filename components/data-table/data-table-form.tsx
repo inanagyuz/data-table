@@ -39,13 +39,15 @@ import {
 } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function DataTableForm<FormType extends ZodType<any, any, any>>({
    schemas,
    form,
    onSubmit,
 }: {
    schemas: TDataTableDataValidation[];
-   form: UseFormReturn<{}, any, undefined>;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   form: UseFormReturn<object, any, undefined>;
    onSubmit: z.infer<FormType>;
 }) {
    return (
@@ -65,7 +67,8 @@ export function DataTableForm<FormType extends ZodType<any, any, any>>({
                return (
                   <FormField
                      key={String('--this-form-').concat(id, index.toString())}
-                     control={form.control}
+                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                     control={form.control as any}
                      name={id as never}
                      render={({ field }) => (
                         <FormItem>
@@ -110,8 +113,9 @@ function UserRequiredField({
    formProps,
    formFieldProps,
 }: Partial<TDataTableDataValidation> & {
-   formFieldProps?: ControllerRenderProps<{}, never>;
-   formProps?: UseFormReturn<{}, any, undefined>;
+   formFieldProps?: ControllerRenderProps<object, never>;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   formProps?: UseFormReturn<object, any, undefined>;
 }) {
    const [inStateOpen, setInStateOpen] = useState<boolean>(false);
    const [inStateValue, setInStateValue] = useState(formFieldProps?.value || '');
@@ -224,7 +228,8 @@ function UserRequiredField({
    if (component === 'checkbox' && formProps) {
       return (
          <FormField
-            control={formProps.control}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            control={formProps.control as any}
             name={formId as never}
             render={() => (
                <FormItem>
@@ -239,7 +244,8 @@ function UserRequiredField({
                   {(data || []).map((item) => (
                      <FormField
                         key={item.value}
-                        control={formProps.control}
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        control={formProps.control as any}
                         name={formId as never}
                         render={({ field }) => {
                            return (
@@ -252,11 +258,13 @@ function UserRequiredField({
                               >
                                  <FormControl>
                                     <Checkbox
+                                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                        checked={(field.value as any[])?.includes(item.value)}
                                        onCheckedChange={(checked) => {
                                           return checked
                                              ? field.onChange([...field.value, item.value])
                                              : field.onChange(
+                                                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                   (field.value as any[])?.filter(
                                                      (value: string) => value !== item.value
                                                   )

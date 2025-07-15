@@ -13,6 +13,7 @@ import {
 import { DataTableInput } from '@/components/data-table/data-table-input';
 import { i18n } from '@/components/data-table/i18n';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function DataTableFilter({ column }: { column: Column<any, unknown> }) {
    const { filterVariant } = column.columnDef.meta ?? {};
 
@@ -43,7 +44,7 @@ export function DataTableFilter({ column }: { column: Column<any, unknown> }) {
                      ? `(${column.getFacetedMinMaxValues()?.[0]})`
                      : ''
                }`}
-               className="w-6/12 border shadow rounded"
+               className="w-6/12 border shadow-sm rounded"
             />
             <DataTableInput
                type="number"
@@ -58,7 +59,7 @@ export function DataTableFilter({ column }: { column: Column<any, unknown> }) {
                      ? `(${column.getFacetedMinMaxValues()?.[1]})`
                      : ''
                }`}
-               className="w-6/12 border shadow rounded"
+               className="w-6/12 border shadow-sm rounded"
             />
          </div>
          <div className="h-1" />
@@ -85,7 +86,7 @@ export function DataTableFilter({ column }: { column: Column<any, unknown> }) {
    ) : (
       <>
          <datalist id={column.id + 'list'}>
-            {sortedUniqueValues.map((value: any) => (
+            {sortedUniqueValues.map((value: string | number) => (
                <option value={value} key={value} />
             ))}
          </datalist>
@@ -94,7 +95,7 @@ export function DataTableFilter({ column }: { column: Column<any, unknown> }) {
             value={(columnFilterValue ?? '') as string}
             onChange={(value) => column.setFilterValue(value)}
             placeholder={`${i18n.t('SEARCH')}... (${column.getFacetedUniqueValues().size})`}
-            className="w-full border shadow rounded"
+            className="w-full border shadow-sm rounded"
             list={column.id + 'list'}
          />
          <div className="h-1" />

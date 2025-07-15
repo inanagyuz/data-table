@@ -6,6 +6,7 @@ import {DateRange} from "react-day-picker";
 import {Column} from "@tanstack/react-table";
 import {Calendar} from "@/components/ui/calendar";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function DataTableInputDate({column}: { column: Column<any, unknown> }) {
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(),

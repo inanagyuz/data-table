@@ -21,12 +21,14 @@ import { DataTableForm } from '@/components/data-table/data-table-form';
 import { i18n } from '@/components/data-table/i18n';
 
 export function DataTableAddRow() {
-   const { title, description, onSubmitNewData, schemas } = useDataTableStore((state) => ({
-      ...state.addDataProps,
-      schemas: state.dataValidationProps,
-   }));
+   const { addDataProps, dataValidationProps } = useDataTableStore();
+
+   const { title, description, onSubmitNewData } = addDataProps || {};
+   const schemas = dataValidationProps;
+
    const getFormSchema = () => {
-      const defaultValues: { [k: string]: string } = {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const defaultValues: { [k: string]: any } = {};
       if (schemas instanceof Array && schemas.length > 0) {
          const obj: { [k: string]: z.ZodType } = {};
          schemas.forEach((item) => {
@@ -43,7 +45,9 @@ export function DataTableAddRow() {
       defaultValues: FormSchema.defaultValues,
    });
    const onSubmit = (data: z.infer<typeof FormSchema.schema>) => {
-      onSubmitNewData && onSubmitNewData(data);
+      if (onSubmitNewData) {
+         onSubmitNewData(data);
+      }
    };
    return (
       <Sheet>
@@ -64,8 +68,9 @@ export function DataTableAddRow() {
                {!_.isEmpty(description) && <SheetDescription>{description}</SheetDescription>}
             </SheetHeader>
             <Separator />
-            {Object.keys(FormSchema.defaultValues).length > 0 && schemas !== undefined && (
-               <DataTableForm schemas={schemas} form={form} onSubmit={onSubmit} />
+            {Object.keys(FormSchema.defaultValues).length > 0 && schemas !== undefined && (             
+               // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <DataTableForm schemas={schemas} form={form as any} onSubmit={onSubmit} />
             )}
          </SheetContent>
       </Sheet>

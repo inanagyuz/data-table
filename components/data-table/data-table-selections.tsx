@@ -7,7 +7,7 @@ import { Table } from '@tanstack/react-table';
 import { i18n } from '@/components/data-table/i18n';
 
 export function DataTableSelections<T>({ table }: { table: Table<T> }) {
-   const { toggleSelection, isSelecting } = useDataTableStore((state) => ({ ...state }));
+   const { toggleSelection, isSelecting } = useDataTableStore();
    const onPress = () => {
       toggleSelection();
       table.resetRowSelection();

@@ -28,7 +28,7 @@ export function DataTableCell<T>({ cell }: IDataTableCellEdit<T>) {
    const { isDragging, setNodeRef, transform } = useSortable({
       id: cell.column.id,
    });
-   const { contextMenuProps, isSelecting } = useDataTableStore((state) => ({ ...state }));
+   const { contextMenuProps, isSelecting } = useDataTableStore();
    const pinStyle = getCommonPinningStyles(cell.column);
    const combinedStyle: CSSProperties = {
       opacity: isDragging ? 0.8 : 1,
@@ -45,7 +45,9 @@ export function DataTableCell<T>({ cell }: IDataTableCellEdit<T>) {
       handler?: (probably: T) => void
    ) => {
       event.stopPropagation();
-      handler && handler(cell.row.original);
+      if (handler) {
+         handler(cell.row.original);
+      }
    };
    const showContextMenu = isSelecting !== true && contextMenuProps !== undefined;
    if (showContextMenu) {
@@ -57,6 +59,7 @@ export function DataTableCell<T>({ cell }: IDataTableCellEdit<T>) {
                </ContextMenuTrigger>
                <ContextMenuContent className="w-36">
                   {contextMenuProps.enableEdit && (
+                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                      <DataTableEditRow presetData={cell.row.original as { [k: string]: any }} />
                   )}
                   {!_.isEmpty(contextMenuProps?.extra) && <ContextMenuSeparator />}
@@ -65,8 +68,7 @@ export function DataTableCell<T>({ cell }: IDataTableCellEdit<T>) {
                         <ContextMenuSubTrigger>More Tools</ContextMenuSubTrigger>
                         <ContextMenuSubContent className="w-48">
                            {Object.keys(contextMenuProps?.extra).map((name, index) => (
-                              <ContextMenuItem
-                                 // @ts-ignore
+                              <ContextMenuItem                                 
                                  onClick={(event) =>
                                     onContextMenuItemClick(event, contextMenuProps.extra?.[name])
                                  }
@@ -86,7 +88,7 @@ export function DataTableCell<T>({ cell }: IDataTableCellEdit<T>) {
                      >
                         <div
                            className={
-                              'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-accent'
+                              'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-hidden focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 hover:bg-accent'
                            }
                         >
                            <span className={'text-red-500'}>{i18n.t('DELETE_ROW')}</span>

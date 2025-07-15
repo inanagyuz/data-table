@@ -8,7 +8,7 @@ import { IDataTableExport } from '@/components/data-table/interface/IDataTable';
 import { i18n } from '@/components/data-table/i18n';
 
 export function DataTableExport<T>({ table, onUserExport }: IDataTableExport<T>) {
-   const { exportProps } = useDataTableStore((state) => ({ ...state }));
+   const { exportProps } = useDataTableStore();
    const onPress = () => {
       const data = exportExcelData(
          table.options.data,

@@ -36,7 +36,9 @@ export function DataTableBody<T>(props: IDataTableBody<T>) {
                   key={row.id}
                   className={props.onClick ? 'cursor-pointer' : ''}
                   data-index={virtualRow.index} //needed for dynamic row height measurement
-                  ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
+                  ref={node => {
+                     rowVirtualizer.measureElement(node);
+                  }} //measure dynamic row height
                   style={{
                      display: 'flex',
                      position: 'absolute',

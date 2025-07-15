@@ -13,7 +13,9 @@ export interface IDataTableStore {
    isSelecting: boolean;
    exportProps?: TDataTableExportProps;
    contextMenuProps?: TDataTableContextMenuProps;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    addDataProps?: TDataTableAddDataProps<any>;
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    editDataProps?: TDataTableEditDataProps<any>;
    dataValidationProps?: TDataTableDataValidation[];
 }
@@ -29,7 +31,7 @@ const getDefaultState = (): IDataTableStore => ({
 
 export const createDataTableStore = (preloadedState: IDataTableStore) => {
    return createZustandStore(
-      combine({ ...getDefaultState(), ...preloadedState }, (set, get, store) => ({
+      combine({ ...getDefaultState(), ...preloadedState }, (set) => ({
          toggleSelection: () => {
             set((prev) => ({
                isSelecting: !prev.isSelecting,
@@ -38,7 +40,9 @@ export const createDataTableStore = (preloadedState: IDataTableStore) => {
          setExtraProps: (
             exportProps: TDataTableExportProps | undefined,
             contextMenuProps: TDataTableContextMenuProps | undefined,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             addDataProps: TDataTableAddDataProps<any> | undefined,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             editDataProps: TDataTableEditDataProps<any> | undefined,
             dataValidationProps: TDataTableDataValidation[] | undefined
          ) => {
@@ -55,13 +59,14 @@ export const createDataTableStore = (preloadedState: IDataTableStore) => {
 };
 
 export type DataTableStoreType = ReturnType<typeof createDataTableStore>;
-type DataTableStoreInterface = ReturnType<DataTableStoreType['getState']>;
 
 const zustandContext = createContext<DataTableStoreType | null>(null);
 export const DataTableProvider = zustandContext.Provider;
 
-export const useDataTableStore = <T>(selector: (state: DataTableStoreInterface) => T) => {
+// HOOK'U BU ŞEKİLDE GÜNCELLEYİN
+export const useDataTableStore = () => {
    const store = useContext(zustandContext);
-   if (!store) throw new Error('Language Store is missing the provider');
-   return useZustandStore(store, selector);
+   if (!store) throw new Error('DataTable Store is missing the provider');
+   // State'in tamamını shallow karşılaştırma ile döndürün
+   return useZustandStore(store, (state) => state);
 };

@@ -16,19 +16,22 @@ export function DataTableFloatingBar<T>({
    onUserExport,
    onDelete,
 }: IDataTableFloatingBar<T>) {
-   const { exportProps } = useDataTableStore((state) => ({ ...state }));
+   const { exportProps } = useDataTableStore();
    const isFiltered = table.getState().columnFilters.length > 0 || !!table.getState().globalFilter;
    const isRowSelected = table.getIsSomeRowsSelected() || table.getIsAllRowsSelected();
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const naming: { [k: string]: any } = {};
    for (let i = 0; i < table.options.columns.length; i++) {
       const col = table.options.columns[i];
       naming[col.id as string] = col.header as string;
    }
 
-   const currentFilters = table.getState().columnFilters.map((item: any, _index: number) => {
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   const currentFilters = table.getState().columnFilters.map((item: any) => {
       const fieldName = naming[item.id];
       if (item.value instanceof Array) {
-         item.value = item.value.map((ii: any, _idx: number) => (!ii ? '♾️' : ii));
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         item.value = item.value.map((ii: any) => (!ii ? '♾️' : ii));
          // range filter
          return {
             columnId: item.id,
@@ -89,6 +92,7 @@ export function DataTableFloatingBar<T>({
    };
    const onDeleteInner = () => {
       const rows = table.getSelectedRowModel().rows.map((item) => item.original);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       onDelete && onDelete(rows);
    };
    const onExport = () => {

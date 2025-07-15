@@ -37,7 +37,7 @@ import { useDataTableStore } from '@/components/data-table/store/dataTableStore'
 import { i18n } from '@/components/data-table/i18n';
 
 export function DataTableHeader<T>({ header }: { header: Header<T, unknown> }) {
-   const { isSelecting } = useDataTableStore((state) => ({ ...state }));
+   const { isSelecting } = useDataTableStore( );
    const { attributes, isDragging, listeners, setNodeRef, transform } = useSortable({
       id: header.column.id,
    });

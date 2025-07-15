@@ -49,6 +49,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { i18n } from '@/components/data-table/i18n';
 
 declare module '@tanstack/react-table' {
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    interface ColumnMeta<TData, TValue> {
       filterVariant?: 'text' | 'range' | 'select' | 'date';
    }
@@ -69,9 +70,7 @@ export function AdvancedDataTable<T>(props: IAdvancedDataTable<T>) {
          'AdvancedDataTable required field missing `id`. Must be an unique identifier'
       );
    }
-   const { isSelecting, setExtraProps } = useDataTableStore((state) => ({
-      ...state,
-   }));
+   const { isSelecting, setExtraProps } = useDataTableStore();
    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
    const [columnPinning, setColumnPinning] = useState({});
@@ -117,7 +116,7 @@ export function AdvancedDataTable<T>(props: IAdvancedDataTable<T>) {
       filterFns: {
          fuzzy: fuzzyFilter,
       },
-      // globalFilterFn: "fuzzy",
+      globalFilterFn: 'fuzzy',
       onGlobalFilterChange: setGlobalFilter,
       onRowSelectionChange: setRowSelection,
       onColumnVisibilityChange: setColumnVisibility,
